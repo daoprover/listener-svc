@@ -12,6 +12,7 @@ type Config interface {
 	comfig.Logger
 	pgdb.Databaser
 	types.Copuser
+	NetworkConfiger
 	comfig.Listenerer
 }
 
@@ -19,16 +20,18 @@ type config struct {
 	comfig.Logger
 	pgdb.Databaser
 	types.Copuser
+	NetworkConfiger
 	comfig.Listenerer
 	getter kv.Getter
 }
 
 func New(getter kv.Getter) Config {
 	return &config{
-		getter:     getter,
-		Databaser:  pgdb.NewDatabaser(getter),
-		Copuser:    copus.NewCopuser(getter),
-		Listenerer: comfig.NewListenerer(getter),
-		Logger:     comfig.NewLogger(getter, comfig.LoggerOpts{}),
+		getter:          getter,
+		NetworkConfiger: NewNetworkConfiger(getter),
+		Databaser:       pgdb.NewDatabaser(getter),
+		Copuser:         copus.NewCopuser(getter),
+		Listenerer:      comfig.NewListenerer(getter),
+		Logger:          comfig.NewLogger(getter, comfig.LoggerOpts{}),
 	}
 }

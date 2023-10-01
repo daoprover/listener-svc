@@ -1,7 +1,7 @@
-package service
+package api
 
 import (
-	"github.com/daoprover/listener-svc/internal/service/handlers"
+	"github.com/daoprover/listener-svc/internal/service/api/handlers"
 	"github.com/go-chi/chi"
 	"gitlab.com/distributed_lab/ape"
 )

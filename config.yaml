@@ -5,6 +5,10 @@ log:
 db:
   url: db_url
 
+node:
+  rpc:
+    
+
 listener:
   addr: :8000
 
