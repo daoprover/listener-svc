@@ -2,7 +2,7 @@ package pg
 
 import (
 	"database/sql"
-	"github.com/dl-only-tokens/back-listener/internal/data"
+	"github.com/daoprover/listener-svc/internal/data"
 	"gitlab.com/distributed_lab/kit/pgdb"
 )
 
@@ -20,8 +20,8 @@ func (q *masterQ) New() data.MasterQ {
 	return NewMasterQ(q.db.Clone())
 }
 
-func (q *masterQ) TransactionsQ() data.TransactionsQ {
-	return NewTransactionsQ(q.db)
+func (q *masterQ) TransactionsQ() data.DatasetQ {
+	return NewDatasetQ(q.db)
 }
 
 func (q *masterQ) Transaction(fn func(data interface{}) error, data interface{}) error {

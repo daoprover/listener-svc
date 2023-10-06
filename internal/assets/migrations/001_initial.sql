@@ -1,13 +1,15 @@
 -- +migrate Up
-CREATE TABLE transactions (
+CREATE TABLE dataset (
       id SERIAL PRIMARY KEY,
-      sender CHAR(42),
-      recipient CHAR(42),
-      hash VARCHAR(66) ,
-      value_to numeric,
-      timestamp_to timestamp,
-      currency  VARCHAR(10),
-)
+      token_name                VARCHAR(100),
+      txs_number                int,
+      average_txs_count 		float,
+      average_google_sites	    float,
+      is_there_github 		    boolean,
+      token_description 		VARCHAR(200),
+      number_of_user_group 	    int,
+      percent_token_handlers	int
+);
 
 -- +migrate Down
-DROP TABLE transactions;
+DROP TABLE dataset;

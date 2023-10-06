@@ -36,8 +36,8 @@ func (l *ListenerData) Run() error {
 	}
 }
 
-func (l *ListenerData) prepareTx(tx *types.Transaction) *data.Transaction {
-	return &data.Transaction{
+func (l *ListenerData) prepareTx(tx *types.Transaction) *data.Dataset {
+	return &data.Dataset{
 		Hash:      tx.Hash().Hex(),
 		Recipient: tx.To().Hex(),
 		Sender: tx.
