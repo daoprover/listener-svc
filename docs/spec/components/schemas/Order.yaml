@@ -1,0 +1,14 @@
+allOf:
+  - $ref: '#/components/schemas/OrderKey'
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - id
+        properties:
+          id:
+            type: string
+            example: "1233456657ddf"

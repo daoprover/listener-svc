@@ -1,0 +1,20 @@
+log:
+  level: debug
+  disable_sentry: true
+
+db:
+  url: postgres://postgres:password@localhost:5432/listener?sslmode=disable
+
+node:
+  rpc:
+    
+
+listener:
+  addr: :8000
+
+cop:
+  disabled: true
+  endpoint: "http://..."
+  upstream: "http://..."
+  service_name: listener-svc
+  service_port: 80

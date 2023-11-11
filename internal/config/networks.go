@@ -1,44 +1,57 @@
 package config
 
 import (
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/spf13/cast"
 	figure "gitlab.com/distributed_lab/figure/v3"
 	"gitlab.com/distributed_lab/kit/comfig"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/logan/v3/errors"
+	"reflect"
 )
 
-type NetworkConfiger interface {
-	Network() *Network
+type NetworksConfiger interface {
+	NetworksConfig() *NetworksConfig
 }
 
-type Network struct {
-	Name       string `fig:"name"`
-	Address    string `fig:"address"`
-	Rpc        string `fig:"rpc"`
-	StartBlock uint64 `fiq:"start_block"`
-	ChainID    int32  `fiq:"chain_id"`
+type NetworksConfig struct {
+	RPCEthEndpoint *ethclient.Client `fig:"rpc_eth"`
 }
 
-func NewNetworkConfiger(getter kv.Getter) NetworkConfiger {
-	return &networkconfiger{
+func NewEthRPCConfiger(getter kv.Getter) NetworksConfiger {
+	return &ethRPCConfig{
 		getter: getter,
 	}
 }
 
-type networkconfiger struct {
+type ethRPCConfig struct {
 	getter kv.Getter
 	once   comfig.Once
 }
 
-func (c *networkconfiger) Network() *Network {
+func (c *ethRPCConfig) NetworksConfig() *NetworksConfig {
 	return c.once.Do(func() interface{} {
 		raw := kv.MustGetStringMap(c.getter, "networks")
-		cfg := Network{}
-		err := figure.Out(&cfg).With(figure.BaseHooks).From(raw).Please()
+		config := NetworksConfig{}
+		err := figure.Out(&config).With(figure.BaseHooks, ClientHook).From(raw).Please()
 		if err != nil {
 			panic(errors.Wrap(err, "failed to figure out"))
 		}
+		return &config
+	}).(*NetworksConfig)
+}
 
-		return &cfg
-	}).(*Network)
+var ClientHook = figure.Hooks{
+	"*ethclient.Client": func(value interface{}) (reflect.Value, error) {
+		endpoint, err := cast.ToStringE(value)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+
+		dial, err := ethclient.Dial(endpoint)
+		if err != nil {
+			return reflect.Value{}, errors.Wrap(err, "failed to dial ethclient")
+		}
+		return reflect.ValueOf(dial), nil
+	},
 }

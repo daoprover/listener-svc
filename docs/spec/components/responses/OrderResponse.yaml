@@ -1,0 +1,12 @@
+description: Create order  response
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          items:
+            $ref: "#/components/schemas/Order"
