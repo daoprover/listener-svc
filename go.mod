@@ -1,6 +1,6 @@
 module github.com/daoprover/listener-svc
 
-go 1.21.1
+go 1.21
 
 require (
 	github.com/Masterminds/squirrel v1.4.0
