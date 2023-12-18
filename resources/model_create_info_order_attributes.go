@@ -5,6 +5,8 @@
 package resources
 
 type CreateInfoOrderAttributes struct {
-	Link string `json:"link"`
-	Name string `json:"name"`
+	Link     string `json:"link"`
+	Name     string `json:"name"`
+	TimeFrom uint   `json:"time_from"`
+	TimeTo   uint   `json:"time_to"`
 }

@@ -21,10 +21,4 @@
 go.work
 
 
-config.local.yaml
-test.png
-testqr.png
-client.json
-.vscode/
-docs/node_modules
-docs/web_deploy
+

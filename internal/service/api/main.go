@@ -22,7 +22,7 @@ type service struct {
 
 func (s *service) run() error {
 	s.log.Info("Service started")
-	listener := master.NewListener(context.Background(), s.config.NetworksConfig().RPCEthEndpoint, pg.NewMasterQ(s.config.DB()))
+	listener := master.NewListener(context.Background(), pg.NewMasterQ(s.config.DB()), s.config)
 	go listener.Run()
 	r := s.router(listener)
 

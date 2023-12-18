@@ -9,6 +9,8 @@ allOf:
         required:
           - link
           - name
+          - time_from
+          - time_to
         properties:
           link:
             type: string
@@ -16,3 +18,9 @@ allOf:
           name:
             type:  string
             example:  ""
+          time_from:
+            type:  uint
+            example: 4444444
+          time_to:
+            type: uint
+            

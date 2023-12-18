@@ -28,3 +28,11 @@ type TransactionItem struct {
 	TransactionHash      string `json:"transactionHash"`
 	TransactionTimestamp int    `json:"transactionTimestamp"`
 }
+
+type Holder struct {
+	Address         string
+	TokensAmount    int
+	TimeFrom        uint
+	TimeTo          uint
+	TokenAmountTime int
+}

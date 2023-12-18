@@ -10,11 +10,13 @@ type Order interface {
 }
 
 type OrderData struct {
-	id      string
-	ctx     context.Context
-	db      data.MasterQ
-	Name    string
-	Address string
+	id       string
+	ctx      context.Context
+	db       data.MasterQ
+	Name     string
+	Address  string
+	TimeFrom uint
+	TimeTo   uint
 }
 
 func (o OrderData) GetStatus() string {
