@@ -27,11 +27,14 @@ func (g *GithubListenerData) Run() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to get org by name ")
 	}
+	dataset := data.Dataset{}
+	dataset.TokenName = g.Name
 
 	itemsCount := len(org.Items)
 	if itemsCount != 0 {
-		//todo  insert  to db
-		return nil
+		dataset.IsThereGithub = true
+
+		return g.DB.TransactionsQ().Insert(&dataset)
 	}
 
 	repos, err := g.getRepositories(g.Name, "")
@@ -46,9 +49,7 @@ func (g *GithubListenerData) Run() error {
 		return nil
 	}
 
-	//todo  insert  to db empty data
-
-	return nil
+	return g.DB.TransactionsQ().Insert(&dataset)
 }
 
 func (g *GithubListenerData) prepareOrgURL(name string) string {

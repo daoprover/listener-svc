@@ -30,7 +30,7 @@ type thirdPartyConfig struct {
 func (c *thirdPartyConfig) ThirdPartyConfig() *ThirdPartyConfig {
 	return c.once.Do(func() interface{} {
 		raw := kv.MustGetStringMap(c.getter, "third_party")
-		config := NetworksConfig{}
+		config := ThirdPartyConfig{}
 		err := figure.Out(&config).With(figure.BaseHooks).From(raw).Please()
 		if err != nil {
 			panic(errors.Wrap(err, "failed to figure out"))

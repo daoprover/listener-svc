@@ -17,21 +17,22 @@ type TransactionsResponseData struct {
 type TransactionItem struct {
 	ContractAddress      string `json:"contractAddress"`
 	MinedInBlockHeight   int    `json:"minedInBlockHeight"`
-	RecipientAddress     string `json:"recipientAddress"`
-	SenderAddress        string `json:"senderAddress"`
+	RecipientAddress     string `json:"recipient"`
+	SenderAddress        string `json:"sender"`
 	TokenDecimals        int    `json:"tokenDecimals"`
 	TokenID              string `json:"tokenId"`
 	TokenName            string `json:"tokenName"`
 	TokenSymbol          string `json:"tokenSymbol"`
 	TokenType            string `json:"tokenType"`
-	TokensAmount         string `json:"tokensAmount"`
+	TokensAmount         string `json:"amount"`
 	TransactionHash      string `json:"transactionHash"`
 	TransactionTimestamp int    `json:"transactionTimestamp"`
+	Timestamp            uint   `json:"timestamp"`
 }
 
 type Holder struct {
 	Address         string
-	TokensAmount    int
+	TokensAmount    float64
 	TimeFrom        uint
 	TimeTo          uint
 	TokenAmountTime int

@@ -52,11 +52,13 @@ func (c *CryptoAPI) GetInternalTransactionByAddress(address string, timestampFro
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to send request")
 	}
+
 	response := new(TransactionsResponse)
 	err = json.NewDecoder(rawRes.Body).Decode(&response)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to decode data")
 	}
+
 	return response, nil
 }
 
@@ -70,9 +72,9 @@ func (c *CryptoAPI) GetTokensHolders(response TransactionsResponse) map[string]H
 		holder, ok := holders[address]
 		if !ok {
 			holder = Holder{}
-			amount, err := strconv.Atoi(tx.TokensAmount)
+			amount, err := strconv.ParseFloat(tx.TokensAmount, 64)
 			if err != nil {
-				continue
+				amount = 0
 			}
 			holder.TokensAmount = amount
 			holder.Address = address
@@ -81,7 +83,7 @@ func (c *CryptoAPI) GetTokensHolders(response TransactionsResponse) map[string]H
 		}
 
 		holder.Address = address
-		amount, err := strconv.Atoi(tx.TokensAmount)
+		amount, err := strconv.ParseFloat(tx.TokensAmount, 64)
 		if err != nil {
 			continue
 		}
@@ -101,22 +103,23 @@ func (c *CryptoAPI) GetTokensHoldersByTime(response TransactionsResponse, timeFr
 		holder, ok := holders[address]
 		if !ok {
 			holder = Holder{}
-			amount, err := strconv.Atoi(tx.TokensAmount)
+			amount, err := strconv.ParseFloat(tx.TokensAmount, 64)
 			if err != nil {
-				continue
+				amount = 0.0
 			}
 			holder.TimeTo = timeTo
 			holder.TimeFrom = timeFrom
 			holder.TokensAmount = amount
 			holder.Address = address
+			holders[address] = holder
 
 			continue
 		}
 
 		holder.Address = address
-		amount, err := strconv.Atoi(tx.TokensAmount)
+		amount, err := strconv.ParseFloat(tx.TokensAmount, 64)
 		if err != nil {
-			continue
+			amount = 0
 		}
 		holder.TokensAmount += amount
 

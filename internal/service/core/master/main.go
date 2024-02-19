@@ -16,13 +16,14 @@ import (
 
 type Listener interface {
 	Run() error
-	AddToQuery(name string, address string, timeForm uint, timeTo uint) (*string, error)
+	AddToQuery(name string, address string, timeTo uint, timeForm uint) (*string, error)
+	ValidateOrder(id string) (OrderData, error)
 }
 
 type ListenerData struct {
 	ctx    context.Context
 	db     data.MasterQ
-	query  chan OrderData
+	query  chan *OrderData
 	orders map[string]Order
 	uuid   uuid.UUID
 	config config.Config
@@ -33,7 +34,7 @@ func NewListener(ctx context.Context, db data.MasterQ, config config.Config) Lis
 		ctx:    ctx,
 		db:     db,
 		config: config,
-		query:  make(chan OrderData),
+		query:  make(chan *OrderData),
 		orders: make(map[string]Order),
 	}
 }
@@ -45,19 +46,24 @@ func (l *ListenerData) Run() error {
 			return nil
 		case order := <-l.query:
 
-			data := l.config.ThirdPartyConfig()
-			fmt.Println(data)
 			glistener := github.NewGithubListener(order.ctx, order.db, order.id, order.Name, order.Address)
 			if err := glistener.Run(); err != nil {
 				return errors.Wrap(err, "Failed to  get info  from github")
 			}
+
 			ethListener := cryptoapi.NewCryptoAPI(l.config.ThirdPartyConfig().ApiPath, l.config.ThirdPartyConfig().ApiKey)
 			responceTx, err := ethListener.GetInternalTransactionByAddress(order.Address, order.TimeFrom, order.TimeTo)
 			if err != nil {
 				continue
 			}
+
+			fmt.Println("responce tx: ", responceTx)
+
 			holders := ethListener.GetTokensHoldersByTime(*responceTx, order.TimeFrom, order.TimeTo)
-			fmt.Print(holders)
+			order.Holders = holders
+			fmt.Printf("set: ", order.Holders)
+			fmt.Printf("data: ", holders)
+
 		}
 	}
 }
@@ -80,6 +86,15 @@ func (l *ListenerData) AddToQuery(name string, address string, timeTo, timeFrom 
 	}
 
 	l.orders[order.id] = order
-	l.query <- order
+	l.query <- &order
 	return &order.id, nil
+}
+
+func (l *ListenerData) ValidateOrder(id string) (OrderData, error) {
+	order := l.orders[id]
+	if order == nil {
+		return OrderData{}, errors.New("Failed to get order")
+	}
+
+	return order.GetData(), nil
 }

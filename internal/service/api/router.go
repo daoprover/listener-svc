@@ -23,6 +23,7 @@ func (s *service) router(listener master.Listener) chi.Router {
 	r.Route("/integrations/listener-svc", func(r chi.Router) {
 		r.Route("/order", func(r chi.Router) {
 			r.Post("/", handlers.CreateInfoOrder)
+			r.Get("/{id}", handlers.ValidateOrder)
 		})
 	})
 

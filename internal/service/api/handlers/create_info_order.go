@@ -18,15 +18,15 @@ func CreateInfoOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	masterRunner := MasterRunner(r)
-	orderID, err := masterRunner.AddToQuery(request.Data.Attributes.Name, request.Data.Attributes.Link, request.Data.Attributes.TimeFrom, request.Data.Attributes.TimeTo)
+	orderID, err := masterRunner.AddToQuery(request.Data.Attributes.Name, request.Data.Attributes.Address, request.Data.Attributes.TimeTo, request.Data.Attributes.TimeFrom)
 	if err != nil {
-		Log(r).Error(errors.Wrap(err, "failed  to  init order"))
+		Log(r).Error(errors.Wrap(err, "failed to init order"))
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
 	ape.Render(w, CreateInfoOrderResponse(*orderID))
-
 }
 
 func CreateInfoOrderResponse(orderID string) resources.OrderResponse {
